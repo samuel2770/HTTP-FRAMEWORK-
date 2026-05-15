@@ -1,17 +1,14 @@
-const App = require('./lib/framework');
-const inventory = require('./controllers/inventory');
+const http = require('http');
+const app = require('./app');
+const { initSocket } = require('./config/socket');
 
-const app = new App();
+const server = http.createServer(app);
 
-// Map routes to our controller functions
-app.get('/items', inventory.getAll);
-app.get('/items/:id', inventory.getOne);
-app.post('/items', inventory.create);
-app.put('/items/:id', inventory.update);
-app.delete('/items/:id', inventory.remove);
+// Initialize Socket.io
+initSocket(server);
 
-const PORT = 3000;
+const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running smoothly on http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
